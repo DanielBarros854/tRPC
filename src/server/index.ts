@@ -1,7 +1,7 @@
 import * as trpc from '@trpc/server'
 import * as trpcExpress from '@trpc/server/adapters/express';
 import express from 'express';
-import { z } from 'zod'
+import { object, string } from 'zod'
 import { Users } from '../data'
 
 const appRouter = trpc
@@ -17,7 +17,7 @@ const appRouter = trpc
   //   if (typeof val === 'string' || typeof val === 'undefined') return val
   //   throw new Error(`Invalid input: ${typeof val}`)
   // },
-  input: z.string(),
+  input: string(),
   async resolve(req) {
     const id: string | undefined = req?.input;
 
@@ -35,8 +35,8 @@ const appRouter = trpc
   },
 })
 .mutation('createUser', {
-  input: z.object({
-    name: z.string().min(5)
+  input: object({
+    name: string().min(5)
   }),
   async resolve({ input }) {
     Users.push(
@@ -50,10 +50,10 @@ const appRouter = trpc
   }
 })
 .mutation('updateUser', {
-  input: z.object({
-    id: z.string(),
-    fields: z.object({
-      name: z.string().min(5)
+  input: object({
+    id: string(),
+    fields: object({
+      name: string().min(5)
     })
   }),
   async resolve({ input }) {
@@ -68,7 +68,7 @@ const appRouter = trpc
   }
 })
 .mutation('deleteUser', {
-  input: z.object({ id: z.string() }),
+  input: object({ id: string() }),
   async resolve({ input }) {
     const index = Users.findIndex((user) => user.id === input.id)
 
